@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการข้อมูลผู้ป่วย</title>
+    <style> 
+            .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-content {
+    background-color: white;
+    margin: 5% auto; /* แก้จาก 10% เป็น 5% */
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%); /* เพิ่มส่วนนี้เพื่อให้ Modal อยู่กลางจอแนวตั้ง */
+    top: 10%; /* ให้ Modal อยู่กลางจอในแนวตั้ง */
+    position: relative;
+}
+.modal-content h2 {
+    color: #0044cc;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.modal-content label {
+    font-size: 1em;
+    color: #333;
+}
+.modal-content input[type="text"] {
+    width: 95%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+}
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0044cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+.modal-content button:hover {
+    background-color: #003399;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #0044cc, #003399);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 1.1em;
+            position: relative;
+            transition: color 0.3s, transform 0.3s;
+        }
+        .navbar a:hover {
+            color: #ffcc00;
+            transform: scale(1.1);
+        }
+        .welcome {
+            color: white;
+            font-size: 1.2em;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content h2 {
+            color: #0044cc;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .dashboard-status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .status-card {
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+            animation: fadeInUp 1s forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .status-card h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .status-card p {
+            font-size: 1em;
+            color: #666;
+        }
+        table {
+            width: 100%;
+            margin: 30px 0;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        th {
+            background-color: #0044cc;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+        tr:hover td {
+            background-color: #eaeaea;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #0044cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #003399;
+        }
+        /* ปุ่มแก้ไขและลบ */
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+        .edit-btn {
+            background-color: #ffc107;
+            color: white;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        /* Pop-up */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div>
+        <a href="#">แดชบอร์ด</a>
+        <a href="#" id="addpan">เพิ่มข้อมูลผู้ป่วย</a>
+        <a href="#" id="status">สถานะระบบ</a>
+    </div>
+    <div class="welcome">
+        สวัสดี, <span id="username">พยาบาล A</span>
+    </div>
+    <a href="#" id="logoutBtn">ออกจากระบบ</a>
+</div>
+
+<div class="content">
+    <h2>แดชบอร์ดสถานะระบบ</h2>
+    <div class="dashboard-status">
+        <div class="status-card">
+            <h3>ผู้ป่วยปัจจุบัน</h3>
+            <p>จำนวน: 12 คน</p>
+        </div>
+        <div class="status-card">
+            <h3>การจ่ายยาวันนี้</h3>
+            <p>จำนวนยา: 24 โดส</p>
+        </div>
+        <div class="status-card">
+            <h3>ผู้ป่วยที่ต้องเฝ้าระวัง</h3>
+            <p>จำนวน: 3 คน</p>
+        </div>
+        <div class="status-card">
+            <h3>การรักษาที่กำลังดำเนินการ</h3>
+            <p>จำนวน: 5 เคส</p>
+        </div>
+    </div>
+
+    <!-- ตารางข้อมูลผู้ป่วย -->
+    <h2>รายละเอียดผู้ป่วย</h2>
+    <table id="patientTable">
+        <thead>
+            <tr>
+                <th>ชื่อผู้ป่วย</th>
+                <th>หมายเลขห้อง</th>
+                <th>อาการ</th>
+                <th>การรักษา</th>
+                <th>กำหนดการให้ยา</th>
+                <th>การจัดการ</th> <!-- คอลัมน์ใหม่สำหรับปุ่มจัดการ -->
+            </tr>
+        </thead>
+        <tbody id="patientTableBody">
+            <!-- ตัวอย่างข้อมูลเริ่มต้น -->
+            <tr>
+                <td>สมชาย ใจดี</td>
+                <td>101</td>
+                <td>ปวดศีรษะเรื้อรัง</td>
+                <td>ยาพาราเซตามอล</td>
+                <td>วันละ 2 ครั้ง เช้า-เย็น</td>
+                <td class="action-buttons">
+                    <button class="edit-btn" onclick="editPatient(this)">แก้ไข</button>
+                    <button class="delete-btn" onclick="deletePatient(this)">ลบ</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- ปุ่มอัปโหลดไฟล์และ Export -->
+    <div class="btn-group">
+        <input type="file" id="fileUpload" accept=".xlsx" style="display:none;">
+        <button onclick="document.getElementById('fileUpload').click();">อัปโหลดไฟล์ Excel</button>
+        <button onclick="exportData()">Export ข้อมูล</button>
+    </div>
+
+    <!-- Modal สำหรับแก้ไขข้อมูล -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>แก้ไขข้อมูลผู้ป่วย</h2>
+            <form id="editForm">
+                <label>ชื่อผู้ป่วย:</label><br>
+                <input type="text" id="editName" required><br><br>
+                <label>หมายเลขห้อง:</label><br>
+                <input type="text" id="editRoom" required><br><br>
+                <label>อาการ:</label><br>
+                <input type="text" id="editSymptoms" required><br><br>
+                <label>การรักษา:</label><br>
+                <input type="text" id="editTreatment" required><br><br>
+                <label>กำหนดการให้ยา:</label><br>
+                <input type="text" id="editMedication" required><br><br>
+                <button type="button" onclick="savePatient()">บันทึก</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.15.1/xlsx.full.min.js"></script>
+
+<script>
+    let patients = [
+        {name: "สมชาย ใจดี", room: 101, symptoms: "ปวดศีรษะเรื้อรัง", treatment: "ยาพาราเซตามอล", medication: "วันละ 2 ครั้ง เช้า-เย็น"}
+    ];
+
+    // ฟังก์ชันแสดงข้อมูลผู้ป่วยในตาราง
+    function displayPatients() {
+        const tableBody = document.getElementById('patientTableBody');
+        tableBody.innerHTML = ''; // ล้างข้อมูลเดิม
+
+        patients.forEach(patient => {
+            const row = `<tr>
+                            <td>${patient.name}</td>
+                            <td>${patient.room}</td>
+                            <td>${patient.symptoms}</td>
+                            <td>${patient.treatment}</td>
+                            <td>${patient.medication}</td>
+                            <td class="action-buttons">
+                                <button class="edit-btn" onclick="editPatient(this)">แก้ไข</button>
+                                <button class="delete-btn" onclick="deletePatient(this)">ลบ</button>
+                            </td>
+                        </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // ฟังก์ชันเปิดปิด Modal
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    function openModal() {
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    let currentEditingRow; // เก็บแถวที่กำลังแก้ไข
+
+    // ฟังก์ชันแก้ไขผู้ป่วย
+    function editPatient(button) {
+        currentEditingRow = button.parentElement.parentElement;
+        const name = currentEditingRow.querySelector('td:nth-child(1)').textContent;
+        const room = currentEditingRow.querySelector('td:nth-child(2)').textContent;
+        const symptoms = currentEditingRow.querySelector('td:nth-child(3)').textContent;
+        const treatment = currentEditingRow.querySelector('td:nth-child(4)').textContent;
+        const medication = currentEditingRow.querySelector('td:nth-child(5)').textContent;
+
+        // เติมข้อมูลในฟอร์มแก้ไข
+        document.getElementById('editName').value = name;
+        document.getElementById('editRoom').value = room;
+        document.getElementById('editSymptoms').value = symptoms;
+        document.getElementById('editTreatment').value = treatment;
+        document.getElementById('editMedication').value = medication;
+
+        // เปิด Modal
+        openModal();
+    }
+
+    // ฟังก์ชันบันทึกข้อมูลที่แก้ไข
+    function savePatient() {
+        const newName = document.getElementById('editName').value;
+        const newRoom = document.getElementById('editRoom').value;
+        const newSymptoms = document.getElementById('editSymptoms').value;
+        const newTreatment = document.getElementById('editTreatment').value;
+        const newMedication = document.getElementById('editMedication').value;
+
+        // อัปเดตข้อมูลในแถว
+        currentEditingRow.querySelector('td:nth-child(1)').textContent = newName;
+        currentEditingRow.querySelector('td:nth-child(2)').textContent = newRoom;
+        currentEditingRow.querySelector('td:nth-child(3)').textContent = newSymptoms;
+        currentEditingRow.querySelector('td:nth-child(4)').textContent = newTreatment;
+        currentEditingRow.querySelector('td:nth-child(5)').textContent = newMedication;
+
+        // ปิด Modal
+        closeModal();
+    }
+
+    // ฟังก์ชันลบผู้ป่วย
+    function deletePatient(button) {
+        const row = button.parentElement.parentElement;
+        const name = row.querySelector('td').textContent;
+        if (confirm(`คุณต้องการลบผู้ป่วย ${name} ใช่หรือไม่?`)) {
+            row.remove();
+        }
+    }
+
+    // ฟังก์ชัน Export ข้อมูลเป็นไฟล์ Excel
+    function exportData() {
+        let table = document.getElementById("patientTable");
+        let wb = XLSX.utils.table_to_book(table, {sheet: "Sheet1"});
+        XLSX.writeFile(wb, "patient_data.xlsx");
+    }
+
+    // ฟังก์ชันอัปโหลดไฟล์ Excel
+    document.getElementById('fileUpload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+
+            // เลือกแผ่นแรกในไฟล์ Excel
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            
+            // แปลงข้อมูลจากแผ่นงาน Excel เป็น JSON
+            const patientData = XLSX.utils.sheet_to_json(worksheet);
+
+            // แสดงข้อมูลในตาราง
+            displayPatientsFromExcel(patientData);
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+
+    // ฟังก์ชันแสดงข้อมูลจาก Excel ในตาราง
+    function displayPatientsFromExcel(patientData) {
+        const tableBody = document.getElementById('patientTableBody');
+        tableBody.innerHTML = ''; // ล้างข้อมูลเดิม
+
+        patientData.forEach(patient => {
+            const row = `<tr>
+                            <td>${patient["ชื่อผู้ป่วย"]}</td>
+                            <td>${patient["หมายเลขห้อง"]}</td>
+                            <td>${patient["อาการ"]}</td>
+                            <td>${patient["การรักษา"]}</td>
+                            <td>${patient["กำหนดการให้ยา"]}</td>
+                            <td class="action-buttons">
+                                <button class="edit-btn" onclick="editPatient(this)">แก้ไข</button>
+                                <button class="delete-btn" onclick="deletePatient(this)">ลบ</button>
+                            </td>
+                        </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // ฟังก์ชันสำหรับออกจากระบบ
+    document.getElementById('logoutBtn').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = "index.html";
+    });
+
+    // แสดงข้อมูลผู้ป่วยเริ่มต้น
+    displayPatients();
+
+    document.getElementById('addpan').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = "add.html";
+    });
+    document.getElementById('status').addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = "status.html";
+    });
+</script>
+
+</body>
+</html>

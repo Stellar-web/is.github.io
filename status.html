@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถานะระบบหุ่นยนต์</title>
+    <style>
+        body {
+            background-color: #f7f7f7;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background: linear-gradient(90deg, #0044cc, #003399);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .navbar a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content h2 {
+            color: #0044cc;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .robot-status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .robot-card {
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+            animation: fadeInUp 0.5s ease-in-out forwards;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        .robot-card h3 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .robot-card p {
+            font-size: 1em;
+            color: #666;
+            margin: 5px 0;
+        }
+        .robot-card .battery {
+            margin-top: auto;
+            font-size: 1.1em;
+        }
+        .robot-card .status {
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+            display: inline-block;
+        }
+        .online {
+            background-color: #28a745;
+        }
+        .offline {
+            background-color: #dc3545;
+        }
+        .low-battery {
+            background-color: #ffc107;
+        }
+        .location {
+            font-weight: bold;
+        }
+
+        /* การแสดงอนิเมชั่น */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <a href="#" id="dashboard">แดชบอร์ด</a>
+    <a href="#">สถานะระบบ</a>
+    <a href="#" id="add">เพิ่มข้อมูลผู้ป่วย</a>
+</div>
+
+<div class="content">
+    <h2>สถานะระบบหุ่นยนต์</h2>
+
+    <div class="robot-status">
+        <!-- ตัวอย่างข้อมูลหุ่นยนต์ 1 -->
+        <div class="robot-card">
+            <h3>หุ่นยนต์หมายเลข 001</h3>
+            <p class="location">ตำแหน่ง: อาคาร A ห้อง 201</p>
+            <p class="battery">แบตเตอรี่: 85%</p>
+            <p class="status online">สถานะ: กำลังทำงาน</p>
+        </div>
+
+        <!-- ตัวอย่างข้อมูลหุ่นยนต์ 2 -->
+        <div class="robot-card">
+            <h3>หุ่นยนต์หมายเลข 002</h3>
+            <p class="location">ตำแหน่ง: อาคาร B ห้อง 305</p>
+            <p class="battery">แบตเตอรี่: 25%</p>
+            <p class="status low-battery">สถานะ: แบตเตอรี่ต่ำ</p>
+        </div>
+
+        <!-- ตัวอย่างข้อมูลหุ่นยนต์ 3 -->
+        <div class="robot-card">
+            <h3>หุ่นยนต์หมายเลข 003</h3>
+            <p class="location">ตำแหน่ง: อาคาร C ห้อง 102</p>
+            <p class="battery">แบตเตอรี่: 60%</p>
+            <p class="status online">สถานะ: กำลังทำงาน</p>
+        </div>
+
+        <!-- ตัวอย่างข้อมูลหุ่นยนต์ 4 (มีปัญหา) -->
+        <div class="robot-card">
+            <h3>หุ่นยนต์หมายเลข 004</h3>
+            <p class="location">ตำแหน่ง: อาคาร D ห้อง 404</p>
+            <p class="battery">แบตเตอรี่: 90%</p>
+            <p class="status offline">สถานะ: มีปัญหา ไม่สามารถทำงานได้</p>
+        </div>
+
+        <!-- ตัวอย่างข้อมูลหุ่นยนต์ 5 -->
+        <div class="robot-card">
+            <h3>หุ่นยนต์หมายเลข 005</h3>
+            <p class="location">ตำแหน่ง: อาคาร A ห้อง 101</p>
+            <p class="battery">แบตเตอรี่: 10%</p>
+            <p class="status low-battery">สถานะ: แบตเตอรี่ต่ำ</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('dashboard').addEventListener('click', function(event) {
+     event.preventDefault();
+     window.location.href = "main.html";
+ });
+    document.getElementById('add').addEventListener('click', function(event) {
+     event.preventDefault();
+     window.location.href = "add.html";
+ });
+
+</script>
+
+</body>
+</html>
